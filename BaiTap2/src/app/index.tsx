@@ -1,9 +1,22 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native'; 
+import { Image, Pressable, StyleSheet, Text, View } from 'react-native'; 
 import { SafeAreaView } from 'react-native-safe-area-context'; 
 import { Stack } from 'expo-router';
 
 export default function HomeScreen() {
+  const [showScreen2, setShowScreen2] = React.useState(false);
+
+  if (showScreen2) {
+    return (
+      <SafeAreaView style={styles.screen2}>
+        <Pressable style={styles.backButton} onPress={() => setShowScreen2(false)}>
+          <Image source={require('../../assets/images/tabIcons/left-arrow.png')} style={styles.backIcon} />
+        </Pressable>
+        <Text style={styles.screen2Text}>Sreen hi</Text>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <Stack.Screen options={{ headerShown: false }} />
@@ -40,11 +53,40 @@ export default function HomeScreen() {
       <View style={styles.footer}>
         <Text style={styles.footerText}>Khuất Thùy Linh - BIT247620</Text>
       </View>
+
+      <Pressable
+        style={styles.button}
+        onPress={() => setShowScreen2(true)}
+      >
+        <Text style={styles.buttonText}>Click Me</Text>
+      </Pressable>
+      
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  screen2: {
+    flex: 1,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  backButton: {
+    position: 'absolute',
+    top: 16,
+    left: 16,
+    padding: 8,
+  },
+  backIcon: {
+    width: 28,
+    height: 28,
+    resizeMode: 'contain',
+  },
+  screen2Text: {
+    fontSize: 28,
+    fontWeight: 'bold',
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -97,7 +139,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   box6: {
-    height: 130,
+    height: 150,
     backgroundColor: '#ff6d00',
   },
   footer: {
@@ -109,4 +151,22 @@ const styles = StyleSheet.create({
     color: '#333',
     fontWeight: '500',
   },
+  button: {
+    alignSelf: 'center',
+    backgroundColor: '#1e88e5',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
 });
+
+
+
+//generate a function component display a button on bottom-center of the screen with text "Click Me" and when clicked, it should show an alert with the message "Button Clicked!"
+
+//when click "Click me", nó sẽ ra trang mới có dòng chữ "Sreen 2" ở giữa màn hình và có nút quay lại để quay lại trang trước đó(dùng icon left-arrow.png).

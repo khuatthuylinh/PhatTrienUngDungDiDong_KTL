@@ -1,10 +1,26 @@
 import React from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native'; 
+import { Image, Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context'; 
 import { Stack } from 'expo-router';
 
+class StudentInfo {
+  constructor(public name = '', public studentId = '') {}
+}
+
 export default function HomeScreen() {
   const [showScreen2, setShowScreen2] = React.useState(false);
+  const [studentInfo, setStudentInfo] = React.useState(() => new StudentInfo());
+  const [validationError, setValidationError] = React.useState('');
+
+  const handleContinue = () => {
+    if (!studentInfo.name.trim() || !studentInfo.studentId.trim()) {
+      setValidationError('Vui lòng nhập đầy đủ họ tên và MSSV.');
+      return;
+    }
+
+    setValidationError('');
+    setShowScreen2(true);
+  };
 
   if (showScreen2) {
     return (
@@ -12,7 +28,9 @@ export default function HomeScreen() {
         <Pressable style={styles.backButton} onPress={() => setShowScreen2(false)}>
           <Image source={require('../../assets/images/tabIcons/left-arrow.png')} style={styles.backIcon} />
         </Pressable>
-        <Text style={styles.screen2Text}>Sreen hi</Text>
+        <Text style={styles.screen2Text}>Họ và tên - MSSV</Text>
+        <Text style={styles.studentInfoText}>{studentInfo.name}</Text>
+        <Text style={styles.studentInfoText}>{studentInfo.studentId}</Text>
       </SafeAreaView>
     );
   }
@@ -51,12 +69,33 @@ export default function HomeScreen() {
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Khuất Thùy Linh - BIT247620</Text>
+        <Text style={styles.formTitle}>Nhập thông tin Sinh viên</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Họ và tên"
+          placeholderTextColor="#9ca3af"
+          value={studentInfo.name}
+          onChangeText={(name) => {
+            setValidationError('');
+            setStudentInfo((current) => new StudentInfo(name, current.studentId))
+          }}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Mã số sinh viên"
+          placeholderTextColor="#9ca3af"
+          value={studentInfo.studentId}
+          onChangeText={(studentId) => {
+            setValidationError('');
+            setStudentInfo((current) => new StudentInfo(current.name, studentId))
+          }}
+        />
+        {validationError ? <Text style={styles.errorText}>{validationError}</Text> : null}
       </View>
 
       <Pressable
         style={styles.button}
-        onPress={() => setShowScreen2(true)}
+        onPress={handleContinue}
       >
         <Text style={styles.buttonText}>Click Me</Text>
       </Pressable>
@@ -79,13 +118,17 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   backIcon: {
-    width: 28,
-    height: 28,
+    width: 30,
+    height: 30,
     resizeMode: 'contain',
   },
   screen2Text: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: 'bold',
+  },
+  studentInfoText: {
+    marginTop: 8,
+    fontSize: 25,
   },
   container: {
     flex: 1,
@@ -143,13 +186,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#ff6d00',
   },
   footer: {
-    alignItems: 'center',
-    paddingBottom: 16,
+    gap: 8,
   },
-  footerText: {
-    fontSize: 20,
-    color: '#333',
-    fontWeight: '500',
+  formTitle: {
+    color: '#1565c0',
+    fontSize: 25,
+    fontWeight: '600',
+    marginBottom: 2,
+    textAlign: 'center',
+  },
+  input: {
+    height: 50,
+    borderWidth: 1,
+    borderColor: '#1e88e5',
+    borderRadius: 6,
+    paddingHorizontal: 12,
+    fontSize: 16,
+  },
+  errorText: {
+    color: '#c62828',
+    fontSize: 15,
   },
   button: {
     alignSelf: 'center',
@@ -164,9 +220,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
-
-
-//generate a function component display a button on bottom-center of the screen with text "Click Me" and when clicked, it should show an alert with the message "Button Clicked!"
-
-//when click "Click me", nó sẽ ra trang mới có dòng chữ "Sreen 2" ở giữa màn hình và có nút quay lại để quay lại trang trước đó(dùng icon left-arrow.png).
